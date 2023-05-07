@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +27,13 @@ namespace Ex02
                 }
             }
         }
+        public ushort Size
+        {
+            get
+            {
+                return m_Size;
+            }
+        }
 
         public char? GetCell(ushort i_Row, ushort i_Col)
         {
@@ -43,7 +50,7 @@ namespace Ex02
             return m_Cells[i_Row, i_Col].Value;
         }
 
-        public void SetCell(ushort i_Row, ushort i_Col, char i_Symbol)
+        public void SetCell(ushort i_Row, ushort i_Col, char? i_Symbol)
         {
             if (i_Row < 0 || i_Row >= m_Size)
             {
@@ -55,7 +62,7 @@ namespace Ex02
                 throw new ArgumentOutOfRangeException("col", "Column must be between 0 and " + (m_Size - 1) + ".");
             }
 
-            if (!m_Cells[i_Row, i_Col].HasValue)
+            if (!m_Cells[i_Row, i_Col].HasValue || !i_Symbol.HasValue)
             {
                 m_Cells[i_Row, i_Col] = i_Symbol;
             }
