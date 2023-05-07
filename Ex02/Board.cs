@@ -37,12 +37,12 @@ namespace Ex02
 
         public char? GetCell(ushort i_Row, ushort i_Col)
         {
-            if (i_Row < 0 || i_Row >= m_Size)
+            if(i_Row < 0 || i_Row >= m_Size)
             {
                 throw new ArgumentOutOfRangeException("row", "Row must be between 1 and " + (m_Size) + ".");
             }
 
-            if (i_Col < 0 || i_Col >= m_Size)
+            if(i_Col < 0 || i_Col >= m_Size)
             {
                 throw new ArgumentOutOfRangeException("col", "Column must be between 1 and " + (m_Size) + ".");
             }
@@ -52,17 +52,17 @@ namespace Ex02
 
         public void SetCell(ushort i_Row, ushort i_Col, char? i_Symbol)
         {
-            if (i_Row < 0 || i_Row >= m_Size)
+            if(i_Row < 0 || i_Row >= m_Size)
             {
                 throw new ArgumentOutOfRangeException("row", "Row must be between 1 and " + (m_Size) + ".");
             }
 
-            if (i_Col < 0 || i_Col >= m_Size)
+            if(i_Col < 0 || i_Col >= m_Size)
             {
                 throw new ArgumentOutOfRangeException("col", "Column must be between 1 and " + (m_Size) + ".");
             }
 
-            if (!m_Cells[i_Row, i_Col].HasValue || !i_Symbol.HasValue)
+            if(!m_Cells[i_Row, i_Col].HasValue || !i_Symbol.HasValue)
             {
                 m_Cells[i_Row, i_Col] = i_Symbol;
             }

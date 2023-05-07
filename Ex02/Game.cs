@@ -9,12 +9,15 @@ namespace Ex02
     {
         Board m_Board;
         Player[] m_Player = new Player[2];
+        ushort[] m_PlayerScore = new ushort[2];
 
         public Game(ePlayerType i_Type, ushort i_Size)
         {
             m_Player[0] = new Player('X', ePlayerType.Human);
             m_Player[1] = new Player('O', i_Type);
             m_Board = new Board(i_Size);
+            m_PlayerScore[0] = 0;
+            m_PlayerScore[1] = 0;
         }
 
         public Board Board
@@ -22,6 +25,13 @@ namespace Ex02
             get
             {
                 return m_Board;
+            }
+        }
+        public ushort[] PlayerScore
+        {
+            get
+            {
+                return PlayerScore;
             }
         }
 
@@ -159,7 +169,8 @@ namespace Ex02
                 isWinningDiagonal = true;
                 for (ushort row = 0; row < m_Board.Size; row++)
                 {
-                    if (m_Board.GetCell(row, row) != i_Symbol && m_Board.GetCell(row, row) != null)
+                    if (m_Board.GetCell(row, (ushort)(m_Board.Size - 1 - row)) != i_Symbol 
+                        && m_Board.GetCell(row, (ushort)(m_Board.Size - 1 - row)) != null)
                     {
                         isWinningDiagonal = false;
                         break;
@@ -184,14 +195,84 @@ namespace Ex02
 
         private bool IsWinningCol(ushort i_Col, char i_Symbol)
         {
-            for (ushort row = 0; row < m_Board.Size; row++)
+            for(ushort row = 0; row < m_Board.Size; row++)
             {
-                if (m_Board.GetCell(row, i_Col) != i_Symbol && m_Board.GetCell(row, i_Col) != null)
+                if(m_Board.GetCell(row, i_Col) != i_Symbol && m_Board.GetCell(row, i_Col) != null)
                 {
                     return false;
                 }
             }
             return true;
+        }
+
+        public bool IsGameOver()
+        {
+            for(int i = 0; i < 2; i++) 
+            {
+                for(ushort row = 0; row < m_Board.Size; row++)
+                {
+                    int sequence = 0;
+
+                    for (ushort col = 0; col < m_Board.Size; col++)
+                    {
+                        if (m_Board.GetCell(row, col) == m_Player[i].Symbol)
+                        {
+                            sequence++;
+                            if(sequence == m_Board.Size)
+                            {
+                                m_PlayerScore[1 - i]++;
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                for(ushort col = 0; col < m_Board.Size; col++)
+                {
+                    int sequence = 0;
+
+                    for(ushort row = 0; row < m_Board.Size; row++)
+                    {
+                        if(m_Board.GetCell(row, col) == m_Player[i].Symbol)
+                        {
+                            sequence++;
+                            if(sequence == m_Board.Size)
+                            {
+                                m_PlayerScore[1 - i]++;
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                for(ushort row = 0; row < m_Board.Size; row++)
+                {
+                    int mainDiagonal = 0;
+                    int subDiagonal = 0;
+
+                    if(m_Board.GetCell(row, row) == m_Player[i].Symbol)
+                    {
+                        mainDiagonal++;
+                        if(mainDiagonal == m_Board.Size)
+                        {
+                            m_PlayerScore[1 - i]++;
+                            return true;
+                        }
+                    }
+
+                    if(m_Board.GetCell(row, (ushort)(m_Board.Size-1-row)) == m_Player[i].Symbol)
+                    {
+                        subDiagonal++;
+                        if (subDiagonal == m_Board.Size)
+                        {
+                            m_PlayerScore[1 - i]++;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -98,15 +98,11 @@ namespace Ex02
             }
         }
 
-        public void RunTheGame()
-        {
-
-        }
-
         private void PrintBoard(Board i_Board)
         {
             
             int size = i_Board.Size;
+
             Console.Write("  ");
             for(ushort col = 0; col < size; col++)
             {
@@ -114,7 +110,7 @@ namespace Ex02
             }
             Console.WriteLine();
 
-            for (ushort row = 0; row < size; row++)
+            for(ushort row = 0; row < size; row++)
             {
                 Console.Write((row + 1) + "|");
                 for(ushort col = 0; col < size; col++)
@@ -126,16 +122,16 @@ namespace Ex02
                     }
                     Console.Write(" " + (c.ToString()) + " |"); 
                 }
-                Console.WriteLine();
 
+                Console.WriteLine();
                 Console.Write(" ");
-                for (int col = 0; col < size; col++)
+                for(int col = 0; col < size; col++)
                 {
                     Console.Write("===="); 
                 }
+
                 Console.WriteLine("=");
             }
-
         }
 
         public void GetMoveFromPlayer(ushort i_PlayerNum)
@@ -177,14 +173,14 @@ namespace Ex02
                         }
                     }
                 }
-
             }
-
         }
-        public void StartTheGame()
+        public void InitializeGame()
         {
+            bool gameOver = false;
             this.MainMenuPlayer2Option();
-            if(m_GameMode == eGameMode.Quit) {
+            if(m_GameMode == eGameMode.Quit)
+            {
                 return;
             }
 
@@ -193,17 +189,22 @@ namespace Ex02
             this.PrintBoard(m_Game.Board);
             while(m_GameMode != eGameMode.Quit)
             {
-               GetMoveFromPlayer(0);
+                GetMoveFromPlayer(0);
+                gameOver = m_Game.IsGameOver();
 
-               if(m_GameMode == eGameMode.Human)
+                if (m_GameMode == eGameMode.Human)
                 {
                     GetMoveFromPlayer(1);
                 }
+                else if(m_GameMode == eGameMode.Computer)
+                {
+                    m_Game.Move(1, null, null);
+                }
 
+                Screen.Clear();
+                this.PrintBoard(m_Game.Board);
+                gameOver = m_Game.IsGameOver();
             }
-            
-
-
         }
     }
 }

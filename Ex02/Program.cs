@@ -9,7 +9,7 @@ namespace Ex02
         public static void Main()
         {
             GameOutput theGame = new GameOutput();
-            theGame.StartTheGame();
+            theGame.InitializeGame();
         }
     }
 }
