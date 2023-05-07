@@ -17,6 +17,14 @@ namespace Ex02
             m_Board = new Board(i_Size);
         }
 
+        public Board Board
+        {
+            get
+            {
+                return m_Board;
+            }
+        }
+
         public void Move(ushort i_PlayerNum, ushort? i_X, ushort? i_Y)
         {
             if(m_Player[i_PlayerNum].Type == ePlayerType.Human)
