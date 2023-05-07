@@ -6,5 +6,10 @@ namespace Ex02
 {
     class Program
     {
+        public static void Main()
+        {
+            GameOutput theGame = new GameOutput();
+            theGame.StartTheGame();
+        }
     }
 }

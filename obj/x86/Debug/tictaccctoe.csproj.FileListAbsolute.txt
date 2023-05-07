@@ -1,0 +1,9 @@
+C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\tictaccctoe.csproj.AssemblyReference.cache
+C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\tictaccctoe.csproj.CoreCompileInputs.cache
+C:\Users\ofirc\source\repos\TicTacToeOpposite\bin\Debug\ConsoleApplication.exe.config
+C:\Users\ofirc\source\repos\TicTacToeOpposite\bin\Debug\ConsoleApplication.exe
+C:\Users\ofirc\source\repos\TicTacToeOpposite\bin\Debug\ConsoleApplication.pdb
+C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\ConsoleApplication.exe
+C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\ConsoleApplication.pdb
+C:\Users\ofirc\source\repos\TicTacToeOpposite\bin\Debug\Ex02.ConsoleUtils.dll
+C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\tictaccctoe.csproj.CopyComplete

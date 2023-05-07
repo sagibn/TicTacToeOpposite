@@ -39,27 +39,27 @@ namespace Ex02
         {
             if (i_Row < 0 || i_Row >= m_Size)
             {
-                throw new ArgumentOutOfRangeException("row", "Row must be between 0 and " + (m_Size - 1) + ".");
+                throw new ArgumentOutOfRangeException("row", "Row must be between 1 and " + (m_Size) + ".");
             }
 
             if (i_Col < 0 || i_Col >= m_Size)
             {
-                throw new ArgumentOutOfRangeException("col", "Column must be between 0 and " + (m_Size - 1) + ".");
+                throw new ArgumentOutOfRangeException("col", "Column must be between 1 and " + (m_Size) + ".");
             }
             
-            return m_Cells[i_Row, i_Col].Value;
+            return m_Cells[i_Row, i_Col];
         }
 
         public void SetCell(ushort i_Row, ushort i_Col, char? i_Symbol)
         {
             if (i_Row < 0 || i_Row >= m_Size)
             {
-                throw new ArgumentOutOfRangeException("row", "Row must be between 0 and " + (m_Size - 1) + ".");
+                throw new ArgumentOutOfRangeException("row", "Row must be between 1 and " + (m_Size) + ".");
             }
 
             if (i_Col < 0 || i_Col >= m_Size)
             {
-                throw new ArgumentOutOfRangeException("col", "Column must be between 0 and " + (m_Size - 1) + ".");
+                throw new ArgumentOutOfRangeException("col", "Column must be between 1 and " + (m_Size) + ".");
             }
 
             if (!m_Cells[i_Row, i_Col].HasValue || !i_Symbol.HasValue)
