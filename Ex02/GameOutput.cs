@@ -267,7 +267,9 @@ namespace Ex02
                 gameOver = m_Game.IsGameOver();
                 if(gameOver)
                 {
-                    if(m_GameMode == eGameMode.Human)
+                    showScore();
+
+                    if (m_GameMode == eGameMode.Human)
                     {
                         m_Game = new Game(ePlayerType.Human, m_BoardSize);
                     }
@@ -275,8 +277,6 @@ namespace Ex02
                     {
                         m_Game = new Game(ePlayerType.Computer, m_BoardSize);
                     }
-
-                    showScore();
                 }
             }
         }
