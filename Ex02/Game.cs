@@ -31,7 +31,7 @@ namespace Ex02
         {
             get
             {
-                return PlayerScore;
+                return m_PlayerScore;
             }
         }
 
@@ -183,26 +183,44 @@ namespace Ex02
 
         private bool IsWinningRow(ushort i_Row, char i_Symbol)
         {
-            for (ushort col = 0; col < m_Board.Size; col++)
+            //Ignore empty rows
+            int symbolIsExist = 0;
+            bool optionalSequence = false;
+
+            for(ushort col = 0; col < m_Board.Size; col++)
             {
-                if (m_Board.GetCell(i_Row, col) != i_Symbol && m_Board.GetCell(i_Row, col) != null)
+                if(m_Board.GetCell(i_Row, col) != i_Symbol && m_Board.GetCell(i_Row, col) != null)
                 {
-                    return false;
+                    optionalSequence = true;
+                }
+                else
+                {
+                    symbolIsExist++;
                 }
             }
-            return true;
+
+            return optionalSequence && symbolIsExist > 1;
         }
 
         private bool IsWinningCol(ushort i_Col, char i_Symbol)
         {
+            //ignore empty cols
+            int symbolIsExist = 0;
+            bool optionalSequence = false;
+
             for(ushort row = 0; row < m_Board.Size; row++)
             {
                 if(m_Board.GetCell(row, i_Col) != i_Symbol && m_Board.GetCell(row, i_Col) != null)
                 {
-                    return false;
+                    optionalSequence = true;
+                }
+                else
+                {
+                    symbolIsExist++;
                 }
             }
-            return true;
+
+            return optionalSequence && symbolIsExist > 1;
         }
 
         public bool IsGameOver()
