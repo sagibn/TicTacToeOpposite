@@ -83,31 +83,25 @@ namespace Ex02
             }
         }
 
-        public void ComputerMove(ushort i_PlayerNum)
+        private void ComputerMove(ushort i_PlayerNum)
         {
-            char symbol = m_Player[i_PlayerNum].Symbol; // computer player's symbol
+            char symbol = m_Player[i_PlayerNum].Symbol;
             int size = m_Board.Size;
             int maxScore = -size * size; // initialize to a very low value
             ushort bestRow = 0, bestCol = 0;
 
-            for (ushort row = 0; row < size; row++)
+            for(ushort row = 0; row < size; row++)
             {
-                for (ushort col = 0; col < size; col++)
+                for(ushort col = 0; col < size; col++)
                 {
-                    if (!m_Board.GetCell(row, col).HasValue)
+                    if(!m_Board.GetCell(row, col).HasValue)
                     {
-                        // found an empty cell, try placing the symbol there
                         m_Board.SetCell((ushort)row, (ushort)col, symbol);
-
-                        // evaluate the score of the move
                         int score = EvaluateBoard(symbol);
-
-                        // undo the move
                         m_Board.SetCell((ushort)row, (ushort)col, null);
 
                         if (score > maxScore)
                         {
-                            // found a better move, update bestRow and bestCol
                             maxScore = score;
                             bestRow = (ushort)row;
                             bestCol = (ushort)col;
@@ -116,89 +110,91 @@ namespace Ex02
                 }
             }
 
-            // make the best move
             m_Board.SetCell(bestRow, bestCol, symbol);
         }
 
         private int EvaluateBoard(char symbol)
         {
-            // evaluate the score of the current board position for the given symbol
+            //Evaluate the score of the current board position for the given symbol
             int size = m_Board.Size;
             int score = 0;
 
-            // check rows
-            for (ushort row = 0; row < size; row++)
+            for(ushort row = 0; row < size; row++)
             {
                 int count = 0;
-                for (ushort col = 0; col < size; col++)
+
+                for(ushort col = 0; col < size; col++)
                 {
-                    if (m_Board.GetCell(row, col) == symbol)
+                    if(m_Board.GetCell(row, col) == symbol)
                     {
                         count++;
                     }
-                    else if (m_Board.GetCell(row, col).HasValue)
+                    else if(m_Board.GetCell(row, col).HasValue)
                     {
                         count--;
                     }
                 }
+
                 score += ScoreCount(count);
             }
 
-            // check columns
-            for (ushort col = 0; col < size; col++)
+            for(ushort col = 0; col < size; col++)
             {
                 int count = 0;
-                for (ushort row = 0; row < size; row++)
+
+                for(ushort row = 0; row < size; row++)
                 {
-                    if (m_Board.GetCell(row, col) == symbol)
+                    if(m_Board.GetCell(row, col) == symbol)
                     {
                         count++;
                     }
-                    else if (m_Board.GetCell(row, col).HasValue)
+                    else if(m_Board.GetCell(row, col).HasValue)
                     {
                         count--;
                     }
                 }
+
                 score += ScoreCount(count);
             }
 
-            // check diagonals
             ushort count1 = 0, count2 = 0;
-            for (ushort i = 0; i < size; i++)
+
+            for(ushort i = 0; i < size; i++)
             {
-                if (m_Board.GetCell(i, i) == symbol)
+                if(m_Board.GetCell(i, i) == symbol)
                 {
                     count1++;
                 }
-                else if (m_Board.GetCell(i, i).HasValue)
+                else if(m_Board.GetCell(i, i).HasValue)
                 {
                     count1--;
                 }
-                if (m_Board.GetCell(i, (ushort)(size - i - 1)) == symbol)
+                if(m_Board.GetCell(i, (ushort)(size - i - 1)) == symbol)
                 {
                     count2++;
                 }
-                else if (m_Board.GetCell(i, (ushort)(size - i - 1)).HasValue)
+                else if(m_Board.GetCell(i, (ushort)(size - i - 1)).HasValue)
                 {
                     count2--;
                 }
             }
+
             score += ScoreCount(count1) + ScoreCount(count2);
 
             return score;
         }
 
-        private int ScoreCount(int count)
+        private int ScoreCount(int i_Count)
         {
-            if (count == m_Board.Size - 1)
+            if (i_Count == m_Board.Size - 1)
             {
                 return 100;
             }
-            else if (count == m_Board.Size - 2)
+            else if (i_Count == m_Board.Size - 2)
             {
                 return 10;
             }
-            else if (count == m_Board.Size - 3)
+            else if (i_Count == m_Board.Size - 3)
             {
                 return 1;
             }
