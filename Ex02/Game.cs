@@ -5,19 +5,28 @@ using System.Text;
 
 namespace Ex02
 {
+    enum eWinnerOfTheMatch
+    {
+        Player1,
+        Player2,
+        Tie,
+        None
+    }
     class Game
     {
-        Board m_Board;
-        Player[] m_Player = new Player[2];
-        ushort[] m_PlayerScore = new ushort[2];
+        private Board m_Board;
+        private Player[] m_Player = new Player[2];
+        private static ushort[] m_PlayerScore = new ushort[2] {0, 0};
+        private eWinnerOfTheMatch m_WinnerOfTheMatch;
+        private int m_NumOfAvailableCells;
 
         public Game(ePlayerType i_Type, ushort i_Size)
         {
             m_Player[0] = new Player('X', ePlayerType.Human);
             m_Player[1] = new Player('O', i_Type);
             m_Board = new Board(i_Size);
-            m_PlayerScore[0] = 0;
-            m_PlayerScore[1] = 0;
+            m_WinnerOfTheMatch = eWinnerOfTheMatch.None;
+            m_NumOfAvailableCells = i_Size * i_Size;
         }
 
         public Board Board
@@ -25,6 +34,13 @@ namespace Ex02
             get
             {
                 return m_Board;
+            }
+        }
+        public eWinnerOfTheMatch WinnerOfTheMatch
+        {
+            get
+            {
+                return m_WinnerOfTheMatch;
             }
         }
         public ushort[] PlayerScore
@@ -44,6 +60,7 @@ namespace Ex02
                     try
                     {
                         m_Board.SetCell(i_X.Value, i_Y.Value, m_Player[i_PlayerNum].Symbol);
+                        m_NumOfAvailableCells--;
                     }
                     catch(InvalidOperationException ex)
                     {
@@ -62,165 +79,133 @@ namespace Ex02
             else
             {
                 ComputerMove(i_PlayerNum);
+                m_NumOfAvailableCells--;
             }
         }
 
-        private void ComputerMove(ushort i_PlayerNum)
+        public void ComputerMove(ushort i_PlayerNum)
         {
-            List<Tuple<ushort, ushort>> availableCells = new List<Tuple<ushort, ushort>>();
+            char symbol = m_Player[i_PlayerNum].Symbol; // computer player's symbol
+            int size = m_Board.Size;
+            int maxScore = -size * size; // initialize to a very low value
+            ushort bestRow = 0, bestCol = 0;
 
-            for(ushort row = 0; row < m_Board.Size; row++)
+            for (ushort row = 0; row < size; row++)
             {
-                for(ushort col = 0; col < m_Board.Size; col++)
+                for (ushort col = 0; col < size; col++)
                 {
-                    if(!m_Board.GetCell(row, col).HasValue)
+                    if (!m_Board.GetCell(row, col).HasValue)
                     {
-                        availableCells.Add(new Tuple<ushort, ushort>(row, col));
+                        // found an empty cell, try placing the symbol there
+                        m_Board.SetCell((ushort)row, (ushort)col, symbol);
+
+                        // evaluate the score of the move
+                        int score = EvaluateBoard(symbol);
+
+                        // undo the move
+                        m_Board.SetCell((ushort)row, (ushort)col, null);
+
+                        if (score > maxScore)
+                        {
+                            // found a better move, update bestRow and bestCol
+                            maxScore = score;
+                            bestRow = (ushort)row;
+                            bestCol = (ushort)col;
+                        }
                     }
                 }
             }
 
-            if(availableCells.Count == 1)
-            {
-                m_Board.SetCell(availableCells[0].Item1, availableCells[0].Item2, m_Player[i_PlayerNum].Symbol);
-                return;
-            }
-
-            //Step 2: Remove cells that would cause a win for the current player
-            List<Tuple<ushort, ushort>> availableCellsCopy = new List<Tuple<ushort, ushort>>(availableCells);
-
-            foreach(var cell in availableCells)
-            {
-                if(IsWinningMove(cell.Item1, cell.Item2, m_Player[i_PlayerNum].Symbol))
-                {
-                    availableCellsCopy.Remove(new Tuple<ushort, ushort>(cell.Item1, cell.Item2));
-                }
-            }
-
-            if(availableCellsCopy.Count == 1)
-            {
-                m_Board.SetCell(availableCellsCopy[0].Item1, availableCellsCopy[0].Item2, m_Player[i_PlayerNum].Symbol);
-                return;
-            }
-
-            if(availableCellsCopy.Count > 0)
-            {
-                availableCells = availableCellsCopy;
-            }
-
-            //Step 3: Remove cells that would cause a win for the other player
-            availableCellsCopy = new List<Tuple<ushort, ushort>>(availableCells);
-            foreach(var cell in availableCells)
-            {
-                if(IsWinningMove(cell.Item1, cell.Item2, m_Player[1 - i_PlayerNum].Symbol))
-                {
-                    availableCellsCopy.Remove(new Tuple<ushort, ushort>(cell.Item1, cell.Item2));
-                }
-            }
-
-            if(availableCellsCopy.Count == 1)
-            {
-                m_Board.SetCell(availableCellsCopy[0].Item1, availableCellsCopy[0].Item2, m_Player[i_PlayerNum].Symbol);
-                return;
-            }
-
-            if(availableCellsCopy.Count > 0)
-            {
-                availableCells = availableCellsCopy;
-            }
-
-            Random random = new Random();
-            Tuple<ushort, ushort> chosenCell = availableCells[random.Next(availableCells.Count)];
-
-            m_Board.SetCell(chosenCell.Item1, chosenCell.Item2, m_Player[i_PlayerNum].Symbol);
+            // make the best move
+            m_Board.SetCell(bestRow, bestCol, symbol);
         }
 
-        private bool IsWinningMove(ushort i_Row, ushort i_Col, char i_Symbol)
+        private int EvaluateBoard(char symbol)
         {
-            return IsWinningRow(i_Row, i_Symbol) || IsWinningCol(i_Col, i_Symbol)
-                    || IsWinningDiagonal(i_Symbol, i_Row, i_Col);
-        }
+            // evaluate the score of the current board position for the given symbol
+            int size = m_Board.Size;
+            int score = 0;
 
-        private bool IsWinningDiagonal(char i_Symbol, ushort i_Row, ushort i_Col)
-        {
-            bool isWinningDiagonal = false;
-
-            if(i_Row == i_Col)
+            // check rows
+            for (ushort row = 0; row < size; row++)
             {
-                isWinningDiagonal = true;
-
-                for(ushort row = 0; row < m_Board.Size; row++)
+                int count = 0;
+                for (ushort col = 0; col < size; col++)
                 {
-                    if(m_Board.GetCell(row, row) != i_Symbol && m_Board.GetCell(row, row) != null)
+                    if (m_Board.GetCell(row, col) == symbol)
                     {
-                        isWinningDiagonal = false;
-                        break;
+                        count++;
+                    }
+                    else if (m_Board.GetCell(row, col).HasValue)
+                    {
+                        count--;
                     }
                 }
+                score += ScoreCount(count);
             }
 
-            if(i_Row + i_Col == m_Board.Size - 1)
+            // check columns
+            for (ushort col = 0; col < size; col++)
             {
-                if(isWinningDiagonal)
+                int count = 0;
+                for (ushort row = 0; row < size; row++)
                 {
-                    return true;
-                }
-
-                isWinningDiagonal = true;
-                for (ushort row = 0; row < m_Board.Size; row++)
-                {
-                    if (m_Board.GetCell(row, (ushort)(m_Board.Size - 1 - row)) != i_Symbol 
-                        && m_Board.GetCell(row, (ushort)(m_Board.Size - 1 - row)) != null)
+                    if (m_Board.GetCell(row, col) == symbol)
                     {
-                        isWinningDiagonal = false;
-                        break;
+                        count++;
+                    }
+                    else if (m_Board.GetCell(row, col).HasValue)
+                    {
+                        count--;
                     }
                 }
+                score += ScoreCount(count);
             }
 
-            return isWinningDiagonal;
+            // check diagonals
+            ushort count1 = 0, count2 = 0;
+            for (ushort i = 0; i < size; i++)
+            {
+                if (m_Board.GetCell(i, i) == symbol)
+                {
+                    count1++;
+                }
+                else if (m_Board.GetCell(i, i).HasValue)
+                {
+                    count1--;
+                }
+                if (m_Board.GetCell(i, (ushort)(size - i - 1)) == symbol)
+                {
+                    count2++;
+                }
+                else if (m_Board.GetCell(i, (ushort)(size - i - 1)).HasValue)
+                {
+                    count2--;
+                }
+            }
+            score += ScoreCount(count1) + ScoreCount(count2);
+
+            return score;
         }
 
-        private bool IsWinningRow(ushort i_Row, char i_Symbol)
+        private int ScoreCount(int count)
         {
-            //Ignore empty rows
-            int symbolIsExist = 0;
-            bool optionalSequence = false;
-
-            for(ushort col = 0; col < m_Board.Size; col++)
+            if (count == m_Board.Size - 1)
             {
-                if(m_Board.GetCell(i_Row, col) != i_Symbol && m_Board.GetCell(i_Row, col) != null)
-                {
-                    optionalSequence = true;
-                }
-                else
-                {
-                    symbolIsExist++;
-                }
+                return 100;
             }
-
-            return optionalSequence && symbolIsExist > 1;
-        }
-
-        private bool IsWinningCol(ushort i_Col, char i_Symbol)
-        {
-            //ignore empty cols
-            int symbolIsExist = 0;
-            bool optionalSequence = false;
-
-            for(ushort row = 0; row < m_Board.Size; row++)
+            else if (count == m_Board.Size - 2)
             {
-                if(m_Board.GetCell(row, i_Col) != i_Symbol && m_Board.GetCell(row, i_Col) != null)
-                {
-                    optionalSequence = true;
-                }
-                else
-                {
-                    symbolIsExist++;
-                }
+                return 10;
             }
-
-            return optionalSequence && symbolIsExist > 1;
+            else if (count == m_Board.Size - 3)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public bool IsGameOver()
@@ -239,6 +224,7 @@ namespace Ex02
                             if(sequence == m_Board.Size)
                             {
                                 m_PlayerScore[1 - i]++;
+                                m_WinnerOfTheMatch = (eWinnerOfTheMatch)(1 - i);
                                 return true;
                             }
                         }
@@ -257,6 +243,7 @@ namespace Ex02
                             if(sequence == m_Board.Size)
                             {
                                 m_PlayerScore[1 - i]++;
+                                m_WinnerOfTheMatch = (eWinnerOfTheMatch)(1 - i);
                                 return true;
                             }
                         }
@@ -274,6 +261,7 @@ namespace Ex02
                         if(mainDiagonal == m_Board.Size)
                         {
                             m_PlayerScore[1 - i]++;
+                            m_WinnerOfTheMatch = (eWinnerOfTheMatch)(1 - i);
                             return true;
                         }
                     }
@@ -284,13 +272,18 @@ namespace Ex02
                         if (subDiagonal == m_Board.Size)
                         {
                             m_PlayerScore[1 - i]++;
+                            m_WinnerOfTheMatch = (eWinnerOfTheMatch)(1 - i);
                             return true;
                         }
                     }
                 }
             }
 
-            return false;
+            bool isTie = m_NumOfAvailableCells == 0;
+
+            m_WinnerOfTheMatch = isTie ? eWinnerOfTheMatch.Tie : eWinnerOfTheMatch.None;
+
+            return isTie;
         }
     }
 }
