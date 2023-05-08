@@ -186,22 +186,26 @@ namespace Ex02
 
         private int ScoreCount(int i_Count)
         {
-            if (i_Count == m_Board.Size - 1)
+            int retValue;
+
+            if(i_Count == m_Board.Size - 1)
             {
-                return 100;
+                retValue = 100;
             }
-            else if (i_Count == m_Board.Size - 2)
+            else if(i_Count == m_Board.Size - 2)
             {
-                return 10;
+                retValue = 10;
             }
-            else if (i_Count == m_Board.Size - 3)
+            else if(i_Count == m_Board.Size - 3)
             {
-                return 1;
+                retValue = 1;
             }
             else
             {
-                return 0;
+                retValue = 0;
             }
+
+            return retValue;
         }
 
         public bool IsGameOver()
