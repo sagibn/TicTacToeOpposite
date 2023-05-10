@@ -12,6 +12,7 @@ namespace Ex02
         Tie,
         None
     }
+
     class Game
     {
         private Board m_Board;
@@ -22,8 +23,8 @@ namespace Ex02
 
         public Game(ePlayerType i_Type, ushort i_Size)
         {
-            m_Player[0] = new Player('X', ePlayerType.Human);
-            m_Player[1] = new Player('O', i_Type);
+            m_Player[0] = new Player(ePlayerNumber.Player1, ePlayerType.Human);
+            m_Player[1] = new Player(ePlayerNumber.Player2, i_Type);
             m_Board = new Board(i_Size);
             m_WinnerOfTheMatch = eWinnerOfTheMatch.None;
             m_NumOfAvailableCells = i_Size * i_Size;
@@ -85,7 +86,7 @@ namespace Ex02
 
         private void ComputerMove(ushort i_PlayerNum)
         {
-            char symbol = m_Player[i_PlayerNum].Symbol;
+            ePlayerNumber playerNum = m_Player[i_PlayerNum].Symbol;
             int size = m_Board.Size;
             int maxScore = -size * size; // initialize to a very low value
             ushort bestRow = 0, bestCol = 0;
@@ -96,8 +97,8 @@ namespace Ex02
                 {
                     if(!m_Board.GetCell(row, col).HasValue)
                     {
-                        m_Board.SetCell((ushort)row, (ushort)col, symbol);
-                        int score = EvaluateBoard(symbol);
+                        m_Board.SetCell((ushort)row, (ushort)col, playerNum);
+                        int score = EvaluateBoard(playerNum);
                         m_Board.SetCell((ushort)row, (ushort)col, null);
 
                         if (score > maxScore)
@@ -110,10 +111,10 @@ namespace Ex02
                 }
             }
 
-            m_Board.SetCell(bestRow, bestCol, symbol);
+            m_Board.SetCell(bestRow, bestCol, playerNum);
         }
 
-        private int EvaluateBoard(char symbol)
+        private int EvaluateBoard(ePlayerNumber playerNum)
         {
             //Evaluate the score of the current board position for the given symbol
             int size = m_Board.Size;
@@ -125,7 +126,7 @@ namespace Ex02
 
                 for(ushort col = 0; col < size; col++)
                 {
-                    if(m_Board.GetCell(row, col) == symbol)
+                    if(m_Board.GetCell(row, col) == playerNum)
                     {
                         count++;
                     }
@@ -144,7 +145,7 @@ namespace Ex02
 
                 for(ushort row = 0; row < size; row++)
                 {
-                    if(m_Board.GetCell(row, col) == symbol)
+                    if(m_Board.GetCell(row, col) == playerNum)
                     {
                         count++;
                     }
@@ -161,7 +162,7 @@ namespace Ex02
 
             for(ushort i = 0; i < size; i++)
             {
-                if(m_Board.GetCell(i, i) == symbol)
+                if(m_Board.GetCell(i, i) == playerNum)
                 {
                     count1++;
                 }
@@ -169,7 +170,7 @@ namespace Ex02
                 {
                     count1--;
                 }
-                if(m_Board.GetCell(i, (ushort)(size - i - 1)) == symbol)
+                if(m_Board.GetCell(i, (ushort)(size - i - 1)) == playerNum)
                 {
                     count2++;
                 }
@@ -250,11 +251,10 @@ namespace Ex02
                     }
                 }
 
-                for(ushort row = 0; row < m_Board.Size; row++)
+                int mainDiagonal = 0;
+                int subDiagonal = 0;
+                for (ushort row = 0; row < m_Board.Size; row++)
                 {
-                    int mainDiagonal = 0;
-                    int subDiagonal = 0;
-
                     if(m_Board.GetCell(row, row) == m_Player[i].Symbol)
                     {
                         mainDiagonal++;

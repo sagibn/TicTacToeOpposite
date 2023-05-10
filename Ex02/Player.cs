@@ -10,22 +10,22 @@ namespace Ex02
 
     struct Player
     {
-        private readonly char? m_Symbol;
+        private readonly ePlayerNumber? m_PlayerNum;
         private ePlayerType m_Type;
 
-        public Player(char i_Symbol, ePlayerType i_Type)
+        public Player(ePlayerNumber i_PlayerNum, ePlayerType i_Type)
         {
-            m_Symbol = i_Symbol;
+            m_PlayerNum = i_PlayerNum;
             m_Type = i_Type;
         }
 
-        public char Symbol
+        public ePlayerNumber Symbol
         {
             get
             {
-                if (m_Symbol.HasValue)
+                if (m_PlayerNum.HasValue)
                 {
-                    return m_Symbol.Value;
+                    return m_PlayerNum.Value;
                 }
                 else
                 {

@@ -9,7 +9,8 @@ namespace Ex02
         Human,
         Computer,
         Quit,
-        RestartMatch
+        RestartMatchHuman,
+        RestartMatchComputer
     }
     public class GameOutput
     {
@@ -106,6 +107,7 @@ namespace Ex02
 
             int size = i_Board.Size;
             ushort[] playersScores = new ushort[2];
+            char printOut;
 
             Console.Write("  ");
             for(ushort col = 0; col < size; col++)
@@ -120,12 +122,20 @@ namespace Ex02
                 Console.Write((row + 1) + "|");
                 for(ushort col = 0; col < size; col++)
                 {
-                    char? c = i_Board.GetCell(row, col);
-                    if(c == null)
+                    if (i_Board.GetCell(row, col) == ePlayerNumber.Player1) 
                     {
-                        c = ' ';
+                        printOut = 'X';
                     }
-                    Console.Write(" " + (c.ToString()) + " |");
+                    else if(i_Board.GetCell(row, col) == ePlayerNumber.Player2)
+                    {
+                        printOut = 'O';
+                    }
+                    else
+                    {
+                        printOut = ' ';
+                    }
+                    
+                    Console.Write(" " + (printOut.ToString()) + " |");
                 }
 
                 Console.WriteLine();
@@ -149,10 +159,19 @@ namespace Ex02
             while(true)
             {
                 Console.WriteLine("Player number " + (i_PlayerNum + 1) + " please select row and col for your move:");
+                Console.WriteLine("Note that your input should be 'x y' than enter. for example: 3 1");
+                Console.WriteLine("If you wish to exit/restart the match please press q than enter.");
                 playerInput = Console.ReadLine();
                 if(playerInput == "q" || playerInput == "Q")
                 {
-                    m_GameMode = eGameMode.RestartMatch;
+                    if(m_GameMode == eGameMode.Human)
+                    {
+                        m_GameMode = eGameMode.RestartMatchHuman;
+                    }
+                    else
+                    {
+                        m_GameMode = eGameMode.RestartMatchComputer;
+                    }
                     break;
                 }
 
@@ -199,7 +218,6 @@ namespace Ex02
             else
             {
                 Screen.Clear();
-                this.PrintBoard(m_Game.Board);
             }
         }
 
@@ -218,7 +236,28 @@ namespace Ex02
             else
             {
                 Screen.Clear();
-                if(m_GameMode == eGameMode.Human)
+                if(m_GameMode == eGameMode.RestartMatchComputer)
+                {
+                    m_GameMode = eGameMode.Computer;
+                    m_Game = new Game(ePlayerType.Computer, m_BoardSize);
+                }
+                else
+                {
+                    m_GameMode = eGameMode.Human;
+                    m_Game = new Game(ePlayerType.Human, m_BoardSize);
+                }
+
+                PrintBoard(m_Game.Board);
+            }
+        }
+
+        private void RestartGameIfOver(bool i_GameOver)
+        {
+            if (i_GameOver)
+            {
+                showScore();
+
+                if (m_GameMode == eGameMode.Human)
                 {
                     m_Game = new Game(ePlayerType.Human, m_BoardSize);
                 }
@@ -230,7 +269,6 @@ namespace Ex02
                 PrintBoard(m_Game.Board);
             }
         }
-
         private void TheGameItself()
         {
             bool gameOver = false;
@@ -239,44 +277,36 @@ namespace Ex02
             while(m_GameMode != eGameMode.Quit)
             {
                 GetMoveFromPlayer(0);
-                if(m_GameMode == eGameMode.RestartMatch)
-                {
-                    PlayerOptionRestartOrExit();
-                }
-
-                if(m_GameMode == eGameMode.Quit)
-                {
-                    return;
-                }
-
                 gameOver = m_Game.IsGameOver();
-
-                if(m_GameMode == eGameMode.Human)
+                RestartGameIfOver(gameOver);
+                if (!gameOver)
                 {
-                    GetMoveFromPlayer(1);
-                }
-                else if(m_GameMode == eGameMode.Computer)
-                {
-                    Console.WriteLine("It's the computer's turn");
-                    Thread.Sleep(1000);
-                    m_Game.Move(1, null, null);
-                }
-
-                Screen.Clear();
-                this.PrintBoard(m_Game.Board);
-                gameOver = m_Game.IsGameOver();
-                if(gameOver)
-                {
-                    showScore();
-
                     if (m_GameMode == eGameMode.Human)
                     {
-                        m_Game = new Game(ePlayerType.Human, m_BoardSize);
+                        GetMoveFromPlayer(1);
                     }
-                    else
+                    else if (m_GameMode == eGameMode.Computer)
                     {
-                        m_Game = new Game(ePlayerType.Computer, m_BoardSize);
+                        Console.WriteLine("It's the computer's turn");
+                        Thread.Sleep(1000);
+                        m_Game.Move(1, null, null);
                     }
+                    if (m_GameMode == eGameMode.RestartMatchHuman || m_GameMode == eGameMode.RestartMatchComputer)
+                    {
+                        PlayerOptionRestartOrExit();
+                        if (m_GameMode == eGameMode.Quit)
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    Screen.Clear();
+                    this.PrintBoard(m_Game.Board);
+                    gameOver = m_Game.IsGameOver();
+                    RestartGameIfOver(gameOver);
                 }
             }
         }

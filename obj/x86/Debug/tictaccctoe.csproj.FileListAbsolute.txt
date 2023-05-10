@@ -7,3 +7,12 @@ C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\ConsoleApplication.e
 C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\ConsoleApplication.pdb
 C:\Users\ofirc\source\repos\TicTacToeOpposite\bin\Debug\Ex02.ConsoleUtils.dll
 C:\Users\ofirc\source\repos\TicTacToeOpposite\obj\x86\Debug\tictaccctoe.csproj.CopyComplete
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\bin\Debug\ConsoleApplication.exe.config
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\bin\Debug\ConsoleApplication.exe
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\bin\Debug\ConsoleApplication.pdb
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\bin\Debug\Ex02.ConsoleUtils.dll
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\obj\x86\Debug\tictaccctoe.csproj.AssemblyReference.cache
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\obj\x86\Debug\tictaccctoe.csproj.CoreCompileInputs.cache
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\obj\x86\Debug\tictaccctoe.csproj.CopyComplete
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\obj\x86\Debug\ConsoleApplication.exe
+C:\Users\ofirc\Source\Repos\TicTacToeOppositeLast\obj\x86\Debug\ConsoleApplication.pdb

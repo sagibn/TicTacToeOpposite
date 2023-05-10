@@ -5,10 +5,17 @@ using System.Text;
 
 namespace Ex02
 {
+
+    enum ePlayerNumber
+    {
+        Player1,
+        Player2
+    }
+
     class Board
     {
         private ushort m_Size;
-        private char?[,] m_Cells;
+        private ePlayerNumber?[,] m_Cells;
 
         public Board(ushort i_Size)
         {
@@ -18,7 +25,7 @@ namespace Ex02
             }
 
             m_Size = i_Size;
-            m_Cells = new char?[m_Size, m_Size];
+            m_Cells = new ePlayerNumber?[m_Size, m_Size];
             for(int row = 0; row < m_Size; row++)
             {
                 for (int col = 0; col < m_Size; col++)
@@ -35,7 +42,7 @@ namespace Ex02
             }
         }
 
-        public char? GetCell(ushort i_Row, ushort i_Col)
+        public ePlayerNumber? GetCell(ushort i_Row, ushort i_Col)
         {
             if(i_Row < 0 || i_Row >= m_Size)
             {
@@ -50,7 +57,7 @@ namespace Ex02
             return m_Cells[i_Row, i_Col];
         }
 
-        public void SetCell(ushort i_Row, ushort i_Col, char? i_Symbol)
+        public void SetCell(ushort i_Row, ushort i_Col, ePlayerNumber? i_PlayerNum)
         {
             if(i_Row < 0 || i_Row >= m_Size)
             {
@@ -62,9 +69,9 @@ namespace Ex02
                 throw new ArgumentOutOfRangeException("col", "Column must be between 1 and " + (m_Size) + ".");
             }
 
-            if(!m_Cells[i_Row, i_Col].HasValue || !i_Symbol.HasValue)
+            if(!m_Cells[i_Row, i_Col].HasValue || !i_PlayerNum.HasValue)
             {
-                m_Cells[i_Row, i_Col] = i_Symbol;
+                m_Cells[i_Row, i_Col] = i_PlayerNum;
             }
             else
             {
